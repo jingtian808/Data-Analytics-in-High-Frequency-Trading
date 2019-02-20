@@ -1,0 +1,75 @@
+---
+title: "part 3"
+output: word_document
+---
+
+```{r}
+#read file
+d1122=read.csv('E:/1122.csv')
+d1123=read.csv('E:/1123.csv')
+d1126=read.csv('E:/1126.csv')
+d1127=read.csv('E:/1127.csv')
+d1128=read.csv('E:/1128.csv')
+d1129=read.csv('E:/1129.csv')
+d1130=read.csv('E:/1130.csv')
+d1203=read.csv('E:/1203.csv')
+library(vars)
+#select model
+#take 1st half part of each day as training data
+VARselect(d1122[1:165,2:7],lag.max = 20,type='const')
+VARselect(d1123[1:180,2:7],lag.max = 20,type='const')
+VARselect(d1126[1:195,2:7],lag.max = 20,type='const')
+VARselect(d1127[1:195,2:7],lag.max = 20,type='const')
+VARselect(d1128[1:195,2:7],lag.max = 20,type='const')
+VARselect(d1129[1:195,2:7],lag.max = 20,type='const')
+VARselect(d1130[1:195,2:7],lag.max = 20,type='const')
+VARselect(d1203[1:195,2:7],lag.max = 20,type='const')
+#AIC
+var1122=VAR(d1122[1:165,2:7],ic='AIC')
+summary(var1122)
+var1123=VAR(d1123[1:180,2:7],ic='AIC')
+summary(var1123)
+var1126=VAR(d1126[1:195,2:7],ic='AIC')
+summary(var1126)
+var1127=VAR(d1127[1:195,2:7],ic='AIC')
+summary(var1127)
+var1128=VAR(d1128[1:195,2:7],ic='AIC')
+summary(var1128)
+var1129=VAR(d1129[1:195,2:7],ic='AIC')
+summary(var1129)
+var1130=VAR(d1130[1:195,2:7],ic='AIC')
+summary(var1130)
+var1203=VAR(d1203[1:195,2:7],ic='AIC')
+summary(var1203)
+#note the more * the parameter has, the more significant the parameter is regarding to the model. If the parameter has no *, the parameter can be omitted
+
+#prediction
+#use 1st hald part data of each day to predict 2nd half part data of each day
+predict1122=predict(var1122,n.ahead=165,ci=0.95)$fcst
+predict1123=predict(var1123,n.ahead=180,ci=0.95)$fcst
+predict1126=predict(var1126,n.ahead=195,ci=0.95)$fcst
+predict1127=predict(var1127,n.ahead=195,ci=0.95)$fcst
+predict1128=predict(var1128,n.ahead=195,ci=0.95)$fcst
+predict1129=predict(var1129,n.ahead=195,ci=0.95)$fcst
+predict1130=predict(var1130,n.ahead=195,ci=0.95)$fcst
+predict1203=predict(var1203,n.ahead=195,ci=0.95)$fcst
+new1122=cbind(predict1122[["slp1122"]][,1],predict1122[["sbp1122"]][,1],predict1122[["sap1122"]][,1],predict1122[["flp1122"]][,1],predict1122[["fbp1122"]][,1],predict1122[["fap1122"]][,1])
+new1123=cbind(predict1123[["slp1123"]][,1],predict1123[["sbp1123"]][,1],predict1123[["sap1123"]][,1],predict1123[["flp1123"]][,1],predict1123[["fbp1123"]][,1],predict1123[["fap1123"]][,1])
+new1126=cbind(predict1126[["slp1126"]][,1],predict1126[["sbp1126"]][,1],predict1126[["sap1126"]][,1],predict1126[["flp1126"]][,1],predict1126[["fbp1126"]][,1],predict1126[["fap1126"]][,1])
+new1127=cbind(predict1127[["slp1127"]][,1],predict1127[["sbp1127"]][,1],predict1127[["sap1127"]][,1],predict1127[["flp1127"]][,1],predict1127[["fbp1127"]][,1],predict1127[["fap1127"]][,1])
+new1128=cbind(predict1128[["slp1128"]][,1],predict1128[["sbp1128"]][,1],predict1128[["sap1128"]][,1],predict1128[["flp1128"]][,1],predict1128[["fbp1128"]][,1],predict1128[["fap1128"]][,1])
+new1129=cbind(predict1129[["slp1129"]][,1],predict1129[["sbp1129"]][,1],predict1129[["sap1129"]][,1],predict1129[["flp1129"]][,1],predict1129[["fbp1129"]][,1],predict1129[["fap1129"]][,1])
+new1130=cbind(predict1130[["slp1130"]][,1],predict1130[["sbp1130"]][,1],predict1130[["sap1130"]][,1],predict1130[["flp1130"]][,1],predict1130[["fbp1130"]][,1],predict1130[["fap1130"]][,1])
+new1203=cbind(predict1203[["slp1203"]][,1],predict1203[["sbp1203"]][,1],predict1203[["sap1203"]][,1],predict1203[["flp1203"]][,1],predict1203[["fbp1122"]][,1],predict1203[["fap1203"]][,1])
+#MSE
+library(Metrics)
+#use the 2nd half part data of each day as testing data, and check their MSE
+mse(d1122[166:330,2:7],new1122)
+mse(d1123[181:360,2:7],new1123)
+mse(d1126[196:390,2:7],new1126)
+mse(d1127[196:390,2:7],new1127)
+mse(d1128[196:390,2:7],new1128)
+mse(d1129[196:390,2:7],new1129)
+mse(d1130[196:390,2:7],new1130)
+mse(d1203[196,390,2:7],new1203)
+```
